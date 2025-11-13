@@ -138,4 +138,11 @@ public class Game {
         return correct;
     }
 
+    public boolean deleteSaveGame() {
+        boolean correct = false;
+        if (save.exists()) {
+            correct = save.delete();
+        }
+        return correct;
+    }
 }
