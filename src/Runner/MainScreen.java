@@ -24,6 +24,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -33,6 +35,7 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.text.FontWeight;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Optional;
 
 public class MainScreen extends GameApplication {
@@ -51,6 +54,7 @@ public class MainScreen extends GameApplication {
     private final Duration BUTTON_PING_DURATION = Duration.millis(180);
 
     private double volumeSetting = 0.7;
+    private MediaPlayer bgMusic;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -140,7 +144,11 @@ public class MainScreen extends GameApplication {
             }
         }
 
-        Platform.runLater(this::placeCursorImmediate);
+        Platform.runLater(() -> {
+            placeCursorImmediate();
+            startBackgroundMusic();
+        });
+
         menuBox.boundsInParentProperty().addListener((o, oldB, newB) -> updateCursorSmooth());
         rootPane.widthProperty().addListener((o, oldV, newV) -> updateCursorSmooth());
         rootPane.heightProperty().addListener((o, oldV, newV) -> updateCursorSmooth());
@@ -194,9 +202,9 @@ public class MainScreen extends GameApplication {
                 if (b.isDisable()) {
                     b.setStyle(
                             "-fx-background-color: rgba(80,80,80,0.5);"
-                                    + " -fx-text-fill: rgba(200,200,200,0.7);"
-                                    + " -fx-background-radius: 6;"
-                                    + " -fx-padding: 8 12 8 12;"
+                            + " -fx-text-fill: rgba(200,200,200,0.7);"
+                            + " -fx-background-radius: 6;"
+                            + " -fx-padding: 8 12 8 12;"
                     );
                     b.setEffect(null);
                     b.setFont(Font.font(b.getFont().getFamily(), 20));
@@ -206,21 +214,21 @@ public class MainScreen extends GameApplication {
                 if (i == selectedIndex) {
                     b.setStyle(
                             "-fx-background-color: linear-gradient(#FFD54F, #FFC107);"
-                                    + " -fx-text-fill: black;"
-                                    + " -fx-font-weight: bold;"
-                                    + " -fx-border-color: #FFD700;"
-                                    + " -fx-border-width: 2;"
-                                    + " -fx-background-radius: 6;"
-                                    + " -fx-padding: 8 12 8 12;"
+                            + " -fx-text-fill: black;"
+                            + " -fx-font-weight: bold;"
+                            + " -fx-border-color: #FFD700;"
+                            + " -fx-border-width: 2;"
+                            + " -fx-background-radius: 6;"
+                            + " -fx-padding: 8 12 8 12;"
                     );
                     b.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.rgb(0, 0, 0, 0.45), 8, 0.3, 0, 2));
                     b.setFont(Font.font(b.getFont().getFamily(), FontWeight.BOLD, 20));
                 } else {
                     b.setStyle(
                             "-fx-background-color: rgba(0,0,0,0.6);"
-                                    + " -fx-text-fill: white;"
-                                    + " -fx-background-radius: 6;"
-                                    + " -fx-padding: 8 12 8 12;"
+                            + " -fx-text-fill: white;"
+                            + " -fx-background-radius: 6;"
+                            + " -fx-padding: 8 12 8 12;"
                     );
                     b.setEffect(null);
                     b.setFont(Font.font(b.getFont().getFamily(), 20));
@@ -266,7 +274,7 @@ public class MainScreen extends GameApplication {
                     resultName = name;
                     finished = true;
                 } else {
-                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                    javafx.scene.control.Alert alert = new Alert(javafx.scene.control.Alert.AlertType.WARNING);
                     alert.setTitle("Nombre inválido");
                     alert.setHeaderText("El nombre no puede estar vacío");
                     alert.setContentText("Introduce un nombre válido.");
@@ -362,7 +370,9 @@ public class MainScreen extends GameApplication {
                 }
                 if (!deleted && game != null && game.getArchives() != null) {
                     File arch = game.getArchives();
-                    if (arch.exists()) deleted = arch.delete();
+                    if (arch.exists()) {
+                        deleted = arch.delete();
+                    }
                 }
 
                 Alert info = new Alert(Alert.AlertType.INFORMATION);
@@ -417,8 +427,50 @@ public class MainScreen extends GameApplication {
         });
     }
 
+    private void startBackgroundMusic() {
+        boolean canStart = true;
+
+        if (bgMusic != null) {
+            canStart = false;
+        }
+
+        try {
+            URL res = getClass().getResource("/Resources/music/mainScreen.mp3");
+            if (res == null) {
+                canStart = false;
+            }
+
+            if (canStart) {
+                Media media = new Media(res.toExternalForm());
+                bgMusic = new MediaPlayer(media);
+                bgMusic.setCycleCount(MediaPlayer.INDEFINITE);
+                bgMusic.setVolume(volumeSetting);
+                bgMusic.play();
+            }
+        } catch (Throwable ignored) {
+        }
+
+    }
+
+    private void stopBackgroundMusic() {
+        try {
+            if (bgMusic != null) {
+                bgMusic.stop();
+                bgMusic.dispose();
+                bgMusic = null;
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
     private void applyVolume(double vol) {
         this.volumeSetting = vol;
+        try {
+            if (bgMusic != null) {
+                bgMusic.setVolume(vol);
+            }
+        } catch (Throwable ignored) {
+        }
         try {
             Object audioRoot = null;
             try {
@@ -426,7 +478,6 @@ public class MainScreen extends GameApplication {
                 audioRoot = m.invoke(null);
             } catch (NoSuchMethodException ignored) {
             }
-
             if (audioRoot == null) {
                 try {
                     var m2 = FXGL.class.getMethod("getAudio");
@@ -434,10 +485,8 @@ public class MainScreen extends GameApplication {
                 } catch (NoSuchMethodException ignored) {
                 }
             }
-
             if (audioRoot != null) {
                 Class<?> cls = audioRoot.getClass();
-
                 String[] candidates = {"setMusicVolume", "setSoundVolume", "setGlobalVolume", "setVolume", "setMusicGain"};
                 for (String name : candidates) {
                     try {
@@ -448,17 +497,14 @@ public class MainScreen extends GameApplication {
                             var mm2 = cls.getMethod(name, float.class);
                             mm2.invoke(audioRoot, (float) vol);
                         }
-                    } catch (NoSuchMethodException ignored) {
                     } catch (Throwable ignored) {
                     }
                 }
-
                 try {
                     var sm = cls.getMethod("setMusicVolume", double.class);
                     sm.invoke(audioRoot, vol);
                 } catch (Throwable ignored) {
                 }
-
                 try {
                     var ss = cls.getMethod("setSoundVolume", double.class);
                     ss.invoke(audioRoot, vol);
@@ -521,7 +567,6 @@ public class MainScreen extends GameApplication {
                         a.setTitle("Creada la partida correctamente");
                         a.setContentText("Creada la partida con nombre: " + name);
                         a.showAndWait();
-
                         for (Node n : menuBox.getChildren()) {
                             if (n instanceof Button) {
                                 Button b = (Button) n;
@@ -545,6 +590,7 @@ public class MainScreen extends GameApplication {
                 showConfigScreen();
                 break;
             case "Salir":
+                stopBackgroundMusic();
                 Platform.runLater(() -> Platform.exit());
                 break;
             default:
