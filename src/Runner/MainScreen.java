@@ -25,30 +25,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-
-import com.almasb.fxgl.app.GameApplication;
-import static com.almasb.fxgl.app.GameApplication.launch;
-import com.almasb.fxgl.app.GameSettings;
-import com.almasb.fxgl.dsl.FXGL;
-import javafx.animation.Interpolator;
-import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.util.Duration;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.BlurType;
+import javafx.scene.text.FontWeight;
 
 public class MainScreen extends GameApplication {
 
@@ -158,10 +137,31 @@ public class MainScreen extends GameApplication {
             Node n = menuBox.getChildren().get(i);
             if (n instanceof Button) {
                 Button b = (Button) n;
+
+                b.setWrapText(true);
+                b.setAlignment(Pos.CENTER);
+
                 if (i == selectedIndex) {
-                    b.setStyle("-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-border-color: yellow; -fx-border-width: 1;");
+                    b.setStyle(
+                            "-fx-background-color: linear-gradient(#FFD54F, #FFC107);"
+                            + " -fx-text-fill: black;"
+                            + " -fx-font-weight: bold;"
+                            + " -fx-border-color: #FFD700;"
+                            + " -fx-border-width: 2;"
+                            + " -fx-background-radius: 6;"
+                            + " -fx-padding: 8 12 8 12;"
+                    );
+                    b.setEffect(new DropShadow(BlurType.GAUSSIAN, Color.rgb(0, 0, 0, 0.45), 8, 0.3, 0, 2));
+                    b.setFont(Font.font(b.getFont().getFamily(), FontWeight.BOLD, 20));
                 } else {
-                    b.setStyle("-fx-background-color: rgba(0,0,0,0.6); -fx-text-fill: white;");
+                    b.setStyle(
+                            "-fx-background-color: rgba(0,0,0,0.6);"
+                            + " -fx-text-fill: white;"
+                            + " -fx-background-radius: 6;"
+                            + " -fx-padding: 8 12 8 12;"
+                    );
+                    b.setEffect(null);
+                    b.setFont(Font.font(b.getFont().getFamily(), 20));
                 }
             }
         }
@@ -196,17 +196,14 @@ public class MainScreen extends GameApplication {
             java.util.Optional<String> opt = dlg.showAndWait();
 
             if (!opt.isPresent()) {
-
                 finished = true;
             } else {
                 String name = opt.get().trim();
 
                 if (!name.isEmpty()) {
-
                     resultName = name;
                     finished = true;
                 } else {
-
                     javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
                     alert.setTitle("Nombre inválido");
                     alert.setHeaderText("El nombre no puede estar vacío");
@@ -243,19 +240,21 @@ public class MainScreen extends GameApplication {
 
         switch (sel) {
             case "Continuar":
-                boolean correct = game.readSaveGame();
-                a = new Alert(Alert.AlertType.INFORMATION);
-                if (correct) {
-                    a.setHeaderText("Partida Iniciada");
-                    a.setTitle("Iniciada la partida correctamente");
-                    a.setContentText("La partida se ha cargado correctamente: " + game.getHero().getName());
-                    a.showAndWait();
-                } else {
-                    a.setAlertType(Alert.AlertType.ERROR);
-                    a.setTitle("No se pudo iniciar la partida");
-                    a.setHeaderText("Incorrecto");
-                    a.setContentText("Error ");
-                    a.showAndWait();
+                if (game.getSave().exists()) {
+                    boolean correct = game.readSaveGame();
+                    a = new Alert(Alert.AlertType.INFORMATION);
+                    if (correct) {
+                        a.setHeaderText("Partida Iniciada");
+                        a.setTitle("Iniciada la partida correctamente");
+                        a.setContentText("La partida se ha cargado correctamente: " + game.getHero().getName());
+                        a.showAndWait();
+                    } else {
+                        a.setAlertType(Alert.AlertType.ERROR);
+                        a.setTitle("No se pudo iniciar la partida");
+                        a.setHeaderText("Incorrecto");
+                        a.setContentText("Error ");
+                        a.showAndWait();
+                    }
                 }
                 break;
             case "Nueva Partida":
@@ -270,7 +269,6 @@ public class MainScreen extends GameApplication {
                         a.setTitle("Creada la partida correctamente");
                         a.setContentText("Creada la partida con nombre: " + name);
                         a.showAndWait();
-
                     } else {
                         a.setAlertType(Alert.AlertType.ERROR);
                         a.setTitle("No se pudo crear la partida");
@@ -279,9 +277,7 @@ public class MainScreen extends GameApplication {
                         a.showAndWait();
                     }
                 }
-
                 break;
-
             case "Configuración":
                 a = new Alert(Alert.AlertType.INFORMATION);
                 a.setTitle("Holis");
@@ -300,7 +296,6 @@ public class MainScreen extends GameApplication {
     }
 
     public static void main(String[] args) {
-
         launch(args);
     }
 }
