@@ -5,8 +5,8 @@ import Misc.Classes;
 
 public class Boss extends Monster {
 
-    public Boss(Weapon actualWeapon, int attack, int magic, int defense, int velocidad, int level, Classes actualClass, String name, String sprite, int life, int actualLife) {
-        super(actualWeapon, attack, magic, defense, velocidad, level, actualClass, name, sprite, life, actualLife);
+    public Boss(Weapon actualWeapon, int attack, int magic, int defense, int velocidad, int level, String name, String sprite, int life, int actualLife) {
+        super(actualWeapon, attack, magic, defense, velocidad, level, name, sprite, life, actualLife);
     }
 
 }

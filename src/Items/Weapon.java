@@ -7,6 +7,15 @@ public abstract class Weapon extends Item {
     protected String effect;
     protected String type;
 
+    public Weapon(String info, String name, String id, int attack, int lifeSpan,
+            String effect, String type){
+        super(info, name, id);
+        setAttack(attack);
+        setLifeSpan(lifeSpan);
+        setEffect(effect);
+        setType(type);
+    }
+    
     public int getAttack() {
         return attack;
     }

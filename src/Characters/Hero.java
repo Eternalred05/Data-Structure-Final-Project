@@ -1,6 +1,7 @@
 package Characters;
 
 import Items.*;
+import Logic.Game;
 import cu.edu.cujae.ceis.tree.general.GeneralTree;
 import Misc.*;
 import java.io.Serializable;
@@ -41,17 +42,20 @@ public class Hero implements Serializable {
     private double lastPosX = 0.0;
     private double lastPosY = 0.0;
 
-    public Hero(String name) {
+    public Hero(String name, Weapon weapon, Armor armor) {
         setName(name);
+        setLife(100);
+        setActualLife(100);
         setSpritePath("/Resources/sprites/hero.png");
         setAttack(5);
         setMagic(20);
         setDefense(4);
         setLevel(1);
         setVelocidad(10);
+        setArmor(armor);
         items = new LinkedList<>();
         weapons = new LinkedList<>();
-        actualWeapon = null;
+        actualWeapon = weapon;
         unlockedClasses = new GeneralTree<>();
         this.actualClass = null;
         tasks = new ArrayDeque<>();

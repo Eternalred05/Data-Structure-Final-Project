@@ -1,8 +1,15 @@
 package Items;
 
-public abstract class Armor extends Item {
+public class Armor extends Item{
     protected int defense;
     protected String effect;
+   
+    
+    public Armor(String info, String name, String id ,int defense, String effect){
+        super(info, name, id);
+        setDefense(defense);
+        setEffect(effect);
+    }
 
     public int getDefense() {
         return defense;
@@ -11,6 +18,15 @@ public abstract class Armor extends Item {
     public void setDefense(int defense) {
         this.defense = defense;
     }
+
+    public String getEffect() {
+        return effect;
+    }
+
+    public void setEffect(String effect) {
+        this.effect = effect;
+    }
+    
     
     
     

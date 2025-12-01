@@ -5,6 +5,12 @@ import javax.swing.Icon;
 public class Wares extends Item {
 private int healing;
 
+public Wares(String info, String name, String id, int healing){
+    super(info, name, id);
+    setHealing(healing);
+    
+}
+
     public int getHealing() {
         return healing;
     }

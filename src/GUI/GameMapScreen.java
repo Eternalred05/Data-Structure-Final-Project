@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class GameMapScreen {
 
@@ -89,11 +90,14 @@ public class GameMapScreen {
     private boolean heroPositionInitialized = false;
 
     // Flag para mostrar/ocultar rectángulos de colisión (debug)
-    private boolean debugEnabled = false;
+    private boolean debugEnabled = true;
+
+    // Random para usos de debug (por ejemplo abrir combate con número aleatorio de monstruos)
+    private final Random rnd = new Random();
 
     public GameMapScreen(Game game) {
         this.game = game;
-        Hero hero = game != null ? game.getHero() : null;
+        Hero hero = game.getHero();
 
         Image mapImg;
         try {
@@ -285,6 +289,11 @@ public class GameMapScreen {
                 System.out.println("Hero map center: " + getHeroMapCenter());
                 System.out.println("Hero scene center: " + getHeroSceneCenter());
                 System.out.println("Hero direction: " + getHeroDirection().name());
+            } else if (k == KeyCode.B) {
+                // Debug: abrir pantalla de combate
+                handled = true;
+                clearInputState();
+                openDebugCombat();
             } else if (k == KeyCode.W || k == KeyCode.UP) {
                 up = true;
             } else if (k == KeyCode.S || k == KeyCode.DOWN) {
@@ -827,5 +836,43 @@ public class GameMapScreen {
     private void clearInputState() {
         up = down = left = right = false;
         vx = vy = 0;
+    }
+
+    /**
+     * Abre la pantalla de combate en modo debug. Ajusta rutas de fondo y
+     * sprites según tus recursos.
+     */
+    private void openDebugCombat() {
+        // Rutas de ejemplo: cámbialas si tus recursos están en otra ruta
+        String bg = "/Resources/textures/fieldBattle.png";
+        List<String> sprites = List.of(
+                "/Resources/sprites/monster1.png",
+                "/Resources/sprites/monster2.png",
+                "/Resources/sprites/monster3.png"
+        );
+
+        GUI.CombatScreen cs = new GUI.CombatScreen(game, bg, sprites, game.getHero());
+
+        cs.setOnExit(() -> {
+            Platform.runLater(() -> {
+                try {
+                    FXGL.getGameScene().removeUINode(cs.root);
+                } catch (Throwable ignored) {
+                }
+                try {
+                    FXGL.getGameScene().addUINode(root);
+                } catch (Throwable ignored) {
+                }
+                root.requestFocus();
+            });
+        });
+
+        Platform.runLater(() -> {
+            try {
+                FXGL.getGameScene().removeUINode(root);
+            } catch (Throwable ignored) {
+            }
+            cs.show();
+        });
     }
 }

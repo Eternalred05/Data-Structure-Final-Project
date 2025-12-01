@@ -36,5 +36,9 @@ public abstract class NPC {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public Image getFxImage() {
+        return fxImage;
+    }
 
 }

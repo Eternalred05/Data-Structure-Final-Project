@@ -108,6 +108,8 @@ public class MainScreen extends GameApplication {
     @Override
     protected void initGame() {
         game = new Game();
+       // game.createMonsters();
+        game.createItems();
     }
 
     @Override

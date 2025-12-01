@@ -16,9 +16,8 @@ public class Monster extends NPC {
     private int velocidad;
     private ArrayList<Item> loot;
     private int level;
-    private Classes actualClass;
     
-    public Monster(Weapon actualWeapon, int attack, int magic, int defense, int velocidad, int level, Classes actualClass, String name, String sprite, int life, int actualLife) {
+    public Monster(Weapon actualWeapon, int attack, int magic, int defense, int velocidad, int level, String name, String sprite, int life, int actualLife) {
         super(name, sprite);
         setActualWeapon(actualWeapon);
         setAttack(attack);
@@ -26,7 +25,6 @@ public class Monster extends NPC {
         setDefense(defense);
         setVelocidad(velocidad);
         setLevel(level);
-        setActualClass(actualClass);
         setActualLife(actualLife);
         setLife(life);
         this.loot = new ArrayList<>();
@@ -64,14 +62,6 @@ public class Monster extends NPC {
         this.velocidad = velocidad;
     }
     
-    public Classes getActualClass() {
-        return actualClass;
-    }
-    
-    public void setActualClass(Classes actualClass) {
-        this.actualClass = actualClass;
-    }
-    
     public int getAttack() {
         return attack;
     }
@@ -88,7 +78,7 @@ public class Monster extends NPC {
         this.magic = magic;
     }
     
-    public double getDefense() {
+    public int getDefense() {
         return defense;
     }
     
