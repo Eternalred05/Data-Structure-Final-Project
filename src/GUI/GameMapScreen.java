@@ -90,7 +90,7 @@ public class GameMapScreen {
     private boolean heroPositionInitialized = false;
 
     // Flag para mostrar/ocultar rectángulos de colisión (debug)
-    private boolean debugEnabled = true;
+    private boolean debugEnabled = false;
 
     // Random para usos de debug (por ejemplo abrir combate con número aleatorio de monstruos)
     private final Random rnd = new Random();
@@ -839,8 +839,8 @@ public class GameMapScreen {
     }
 
     /**
-     * Abre la pantalla de combate en modo debug. Ajusta rutas de fondo y
-     * sprites según tus recursos.
+     * Abre la pantalla de combate en modo debug.
+     * Detiene la música del mapa antes de abrir combate y la reanuda al volver.
      */
     private void openDebugCombat() {
         // Rutas de ejemplo: cámbialas si tus recursos están en otra ruta
@@ -851,8 +851,10 @@ public class GameMapScreen {
                 "/Resources/sprites/monster3.png"
         );
 
-        GUI.CombatScreen cs = new GUI.CombatScreen(game, bg, sprites, game.getHero());
+        // Detener música del mapa antes de entrar a combate
+        stopMapMusic();
 
+        GUI.CombatScreen cs = new GUI.CombatScreen(game, bg, sprites, game.getHero());
         cs.setOnExit(() -> {
             Platform.runLater(() -> {
                 try {
@@ -863,6 +865,8 @@ public class GameMapScreen {
                     FXGL.getGameScene().addUINode(root);
                 } catch (Throwable ignored) {
                 }
+                // Reanudar música del mapa al volver
+                startMapMusic();
                 root.requestFocus();
             });
         });
