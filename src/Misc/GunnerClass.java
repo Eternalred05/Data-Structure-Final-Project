@@ -1,6 +1,9 @@
 package Misc;
 
 public class GunnerClass extends Classes{
-    private boolean guns;
+    
+    public GunnerClass(String description, boolean unlocked, boolean actived){
+        super(description, unlocked, actived);
+    }
     
 }

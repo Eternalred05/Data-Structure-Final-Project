@@ -1,5 +1,8 @@
 package Misc;
 
 public class SpearClass extends Classes{
-     private boolean spears;
+    
+public SpearClass(String description, boolean unlocked, boolean actived){
+        super(description, unlocked, actived);
+    }
 }

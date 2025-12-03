@@ -2,6 +2,7 @@ package Misc;
 
 public class SwordmanClass extends Classes {
 
-    private boolean swords;
-
+    public SwordmanClass(String description, boolean unlocked, boolean actived){
+        super(description, unlocked, actived);
+    }
 }

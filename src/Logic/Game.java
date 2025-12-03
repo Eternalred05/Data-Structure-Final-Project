@@ -5,6 +5,7 @@ import Characters.*;
 import Misc.*;
 import cu.edu.cujae.ceis.tree.general.GeneralTree;
 import Utils.*;
+import cu.edu.cujae.ceis.tree.binary.BinaryTreeNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -222,6 +223,44 @@ public class Game {
         characters.add(new Monster((Weapon) items.get(1), 5, 5, 5, 5, 3, "Gnome", null, 20, 20));
         characters.add(new Monster((Weapon) items.get(2), 7, 3, 5, 7, 3, "Goblin", null, 20, 20));
         characters.add(new Monster((Weapon) items.get(0), 5, 3, 10, 3, 3, "Mystical Crab", null, 20, 20));
+    }
+    
+    public void createClassTree(){
+        
+        BinaryTreeNode<Classes> warrior = new BinaryTreeNode<>(
+            new WarriorClass("The basic class. Hits using fists.", true, true));
+        BinaryTreeNode<Classes> swordman = new BinaryTreeNode<>(
+            new SwordmanClass("Hits using a sword. Can be upgraded to anothers blades.", false, false));
+        BinaryTreeNode<Classes> spearman = new BinaryTreeNode<>(
+            new SpearClass("Hits using a spear. Can be upgraded to anothers spears-like.", false, false));
+        BinaryTreeNode<Classes> gunner = new BinaryTreeNode<>(
+            new GunnerClass("Hits using a gun. Can be upgraded to anothers fire weapons.", false, false));
+        BinaryTreeNode<Classes> claymoreUser = new BinaryTreeNode<>(
+            new ClaymoreUserClass("Hits using a claymore.", false, false));
+        BinaryTreeNode<Classes> sabreUser = new BinaryTreeNode<>(
+            new SabreUserClass("Hits using a sabre.", false, false));
+        BinaryTreeNode<Classes> rifleUser = new BinaryTreeNode<>(
+            new RifleUserClass("Hits using a rifle.", false, false));
+        BinaryTreeNode<Classes> shotgunUser = new BinaryTreeNode<>(
+            new ShotgunUserClass("Hits using a shotgun.", false, false));
+        BinaryTreeNode<Classes> halberdUser = new BinaryTreeNode<>(
+            new HalberdUserClass("Hits using a halberd.", false, false));
+        BinaryTreeNode<Classes> pikeUser = new BinaryTreeNode<>(
+            new PikeUserClass("Hits using a pike.", false, false));
+        
+        classes.setRoot(warrior);
+        
+        classes.insertAsFirstSon(swordman, warrior);
+        classes.insertAsFirstSon(claymoreUser, swordman);
+        classes.insertNode(sabreUser, swordman);
+        
+        classes.insertNode(spearman, warrior);
+        classes.insertAsFirstSon(halberdUser, spearman);
+        classes.insertNode(pikeUser, spearman);
+        
+        classes.insertNode(gunner, warrior);
+        classes.insertAsFirstSon(shotgunUser, gunner);
+        classes.insertNode(rifleUser, gunner);
     }
 
 }
